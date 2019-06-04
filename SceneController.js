@@ -11,22 +11,17 @@ var SceneNameDict = {
 var SceneController = cc.Class({
     name:"SceneController",
     properties: {
-        _beforeSceneId:0,
         _afterSceneId:0,
         _backStack:[]
     },
     ctor: function () {
-        this._beforeSceneId = 1;
         this._afterSceneId = 0;
         this._backStack = [];
     },
     startScene: function(nextSceneId) {
-        if(nextSceneId==this._beforeSceneId){
-            return;
-        } else if(nextSceneId==this._backStack[this._backStack.length-1]){
+        if(nextSceneId==this._backStack[this._backStack.length-1]){
             return;
         } else {
-            this._beforeSceneId = this._afterSceneId;
             this._afterSceneId = nextSceneId;
             this._backStack.push(nextSceneId);
             var scene = cc.director.getScene();
@@ -57,8 +52,9 @@ var SceneController = cc.Class({
         });
     },
     finishScene: function(){
-        if(this._backStack.length>0){
+        if(this._backStack.length>1){
             var lastSceneId = this._backStack.pop();
+            lastSceneId = this._backStack.pop();
             this.startScene(lastSceneId);
         } else {
             cc.error("已经回到第一个场景")
