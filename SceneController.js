@@ -5,7 +5,8 @@ var SceneNameDict = {
     3: "SelectScene",
     4: "GameScene",
     5: "GameSuccessScene",
-    6: "GameFailureScene"
+    6: "GameFailureScene",
+    7: "GameDescScene"
 };
 
 var SceneController = cc.Class({
@@ -45,7 +46,7 @@ var SceneController = cc.Class({
                 var canvas = scene.getChildByName("Canvas");
                 canvas.opacity = 0;
                 cc.tween(canvas)
-                .to(1, { opacity: 255})
+                .to(1, { opacity: 255}) 
                 .start()
             });
 
@@ -60,6 +61,31 @@ var SceneController = cc.Class({
             cc.error("已经回到第一个场景")
         }
     },
+    popToRootScene:function(){
+        if(this._backStack.length<1){
+            return;
+        }
+        while(this._backStack.length>1){
+            this._backStack.pop();
+        }
+        var rootSceneId = this._backStack.pop();
+        this.startScene(rootSceneId);
+    },
+    popTo:function(id){
+        if(this._backStack.length<1){
+            return;
+        }
+        var find = false;
+        do{
+            var lastSceneId = this._backStack.pop();
+            if(lastSceneId==id){
+                find=true;
+            }
+        } while(this._backStack.length>0 && !find)
+        if(find){
+            this.startScene(id);
+        }
+    }
 });
 
 // 添加全局变量定义
