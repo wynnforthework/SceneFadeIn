@@ -6,7 +6,8 @@ var SceneNameDict = {
     4: "GameScene",
     5: "GameSuccessScene",
     6: "GameFailureScene",
-    7: "GameDescScene"
+    7: "GameDescScene",
+    8: "ListScene"
 };
 
 var SceneController = cc.Class({
@@ -25,10 +26,11 @@ var SceneController = cc.Class({
         } else {
             this._afterSceneId = nextSceneId;
             this._backStack.push(nextSceneId);
-            var scene = cc.director.getScene();
-            var canvas = scene.getChildByName("Canvas");
-            cc.tween(canvas)
-            .to(1, { opacity: 0})
+            var rootNode = cc.find("Audio");
+            rootNode.getComponent(cc.BlockInputEvents).enabled = true;
+
+            cc.tween(rootNode)
+            .to(1, { opacity: 255})
             // 当前面的动作都执行完毕后才会调用这个回调函数
             .call(() => { 
                 cc.director.loadScene(SceneNameDict[0]);
@@ -37,16 +39,18 @@ var SceneController = cc.Class({
         }
     },
     startTargetScene: function(){
-        var self = this;
-        cc.director.preloadScene(SceneNameDict[self._afterSceneId], function(count,totalCount,res){
+        var _this = this;
+        cc.director.preloadScene(SceneNameDict[_this._afterSceneId], function(count,totalCount,res){
 
         },function(err,res){
-            cc.director.loadScene(SceneNameDict[self._afterSceneId],function(){
-                var scene = cc.director.getScene();
-                var canvas = scene.getChildByName("Canvas");
-                canvas.opacity = 0;
-                cc.tween(canvas)
-                .to(1, { opacity: 255}) 
+            cc.director.loadScene(SceneNameDict[_this._afterSceneId],function(){
+                var rootNode = cc.find("Audio");
+                
+                cc.tween(rootNode)
+                .to(1, { opacity: 0})
+                .call(()=>{
+                    rootNode.getComponent(cc.BlockInputEvents).enabled = false;
+                })
                 .start()
             });
 

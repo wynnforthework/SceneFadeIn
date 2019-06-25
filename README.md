@@ -14,3 +14,4 @@ cocos creator场景切换淡入淡出效果
 1. 修复finishScene错误
 2. 添加回到根Scene
 3. 添加回到指定Scene
+4. 修改变黑方式，不再通过修改canvas透明度，而是修改常驻节点的透明度。
